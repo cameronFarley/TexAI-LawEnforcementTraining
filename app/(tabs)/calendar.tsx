@@ -1,52 +1,94 @@
 import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from "@react-native-community/datetimepicker";
 import { useState } from "react";
 import {
-    Alert,
-    FlatList,
-    Modal,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  FlatList,
+  Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 
 type Event = {
   id: string;
   title: string;
-  date: string;
+  dateISO: string;
+  dateLabel: string;
   time: string;
   description: string;
 };
+
+const TIME_REGEX = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+
+const formatDisplayDate = (date: Date) =>
+  date.toLocaleDateString(undefined, {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 
 export default function Calendar() {
   const [events, setEvents] = useState<Event[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [showIOSDatePicker, setShowIOSDatePicker] = useState(false);
   const [time, setTime] = useState("");
   const [description, setDescription] = useState("");
+  const showTimeError = time.length === 5 && !TIME_REGEX.test(time);
+
+  const handleTimeChange = (rawValue: string) => {
+    const digitsOnly = rawValue.replace(/[^\d]/g, "").slice(0, 4);
+    if (digitsOnly.length <= 2) {
+      setTime(digitsOnly);
+      return;
+    }
+    const hours = digitsOnly.slice(0, 2);
+    const minutes = digitsOnly.slice(2);
+    setTime(`${hours}:${minutes}`);
+  };
 
   const addEvent = () => {
-    if (!title || !date || !time) {
+    if (!title || !selectedDate || !time) {
       Alert.alert("Error", "Please fill in all required fields");
       return;
     }
 
+    if (!TIME_REGEX.test(time)) {
+      Alert.alert("Error", "Please enter a valid time (00:00 - 23:59)");
+      return;
+    }
+
+    const dateISO = selectedDate.toISOString().split("T")[0];
+    const dateLabel = formatDisplayDate(selectedDate);
+
     const newEvent: Event = {
       id: Date.now().toString(),
       title,
-      date,
+      dateISO,
+      dateLabel,
       time,
       description,
     };
 
     setEvents([...events, newEvent].sort((a, b) => 
-      new Date(a.date + " " + a.time).getTime() - 
-      new Date(b.date + " " + b.time).getTime()
+      new Date(a.dateISO + " " + a.time).getTime() - 
+      new Date(b.dateISO + " " + b.time).getTime()
     ));
 
     setTitle("");
-    setDate("");
+    setSelectedDate(null);
+    setShowIOSDatePicker(false);
     setTime("");
     setDescription("");
     setModalVisible(false);
@@ -109,7 +151,7 @@ export default function Calendar() {
                 </TouchableOpacity>
               </View>
               <Text style={{ color: "#888", marginTop: 8 }}>
-                {item.date} at {item.time}
+                {item.dateLabel} at {item.time}
               </Text>
               {item.description ? (
                 <Text style={{ color: "#CCC", marginTop: 8 }}>
@@ -127,101 +169,189 @@ export default function Calendar() {
         transparent
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <View style={{ backgroundColor: "#1E1E1E", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20 }}>
-            <Text style={{ color: "white", fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
-              New Event
-            </Text>
-
-            <TextInput
-              placeholder="Event title *"
-              placeholderTextColor="#777"
-              value={title}
-              onChangeText={setTitle}
-              style={{
-                color: "white",
-                backgroundColor: "#2C2C2C",
-                padding: 14,
-                borderRadius: 10,
-                marginBottom: 12,
-              }}
-            />
-
-            <TextInput
-              placeholder="Date (YYYY-MM-DD) *"
-              placeholderTextColor="#777"
-              value={date}
-              onChangeText={setDate}
-              style={{
-                color: "white",
-                backgroundColor: "#2C2C2C",
-                padding: 14,
-                borderRadius: 10,
-                marginBottom: 12,
-              }}
-            />
-
-            <TextInput
-              placeholder="Time (HH:MM) *"
-              placeholderTextColor="#777"
-              value={time}
-              onChangeText={setTime}
-              style={{
-                color: "white",
-                backgroundColor: "#2C2C2C",
-                padding: 14,
-                borderRadius: 10,
-                marginBottom: 12,
-              }}
-            />
-
-            <TextInput
-              placeholder="Description (optional)"
-              placeholderTextColor="#777"
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              numberOfLines={3}
-              style={{
-                color: "white",
-                backgroundColor: "#2C2C2C",
-                padding: 14,
-                borderRadius: 10,
-                marginBottom: 20,
-                textAlignVertical: "top",
-              }}
-            />
-
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#007AFF",
-                padding: 16,
-                borderRadius: 12,
-                alignItems: "center",
-                marginBottom: 10,
-              }}
-              onPress={addEvent}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" }}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+              style={{ flex: 1, width: "100%" }}
             >
-              <Text style={{ color: "white", fontSize: 16, fontWeight: "600" }}>
-                Create Event
-              </Text>
-            </TouchableOpacity>
+              <ScrollView
+                contentContainerStyle={{
+                  flexGrow: 1,
+                  justifyContent: "flex-end",
+                  paddingBottom: Platform.OS === "ios" ? 40 : 20,
+                }}
+                keyboardShouldPersistTaps="handled"
+              >
+                <View style={{ backgroundColor: "#1E1E1E", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20 }}>
+                  <Text style={{ color: "white", fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
+                    New Event
+                  </Text>
 
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#2C2C2C",
-                padding: 16,
-                borderRadius: 12,
-                alignItems: "center",
-              }}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={{ color: "white", fontSize: 16, fontWeight: "600" }}>
-                Cancel
-              </Text>
-            </TouchableOpacity>
+                  <TextInput
+                    placeholder="Event title *"
+                    placeholderTextColor="#777"
+                    value={title}
+                    onChangeText={setTitle}
+                    style={{
+                      color: "white",
+                      backgroundColor: "#2C2C2C",
+                      padding: 14,
+                      borderRadius: 10,
+                      marginBottom: 12,
+                    }}
+                  />
+
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      if (Platform.OS === "android") {
+                        DateTimePickerAndroid.open({
+                          value: selectedDate ?? new Date(),
+                          onChange: (event, dateValue) => {
+                            if (event.type === "set" && dateValue) {
+                              setSelectedDate(dateValue);
+                            }
+                          },
+                          mode: "date",
+                          display: "calendar",
+                        });
+                      } else {
+                        setShowIOSDatePicker(true);
+                      }
+                    }}
+                    style={{
+                      backgroundColor: "#2C2C2C",
+                      padding: 14,
+                      borderRadius: 10,
+                      marginBottom: 12,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Text style={{ color: selectedDate ? "white" : "#777", fontSize: 16 }}>
+                      {selectedDate
+                        ? formatDisplayDate(selectedDate)
+                        : "Select date *"}
+                    </Text>
+                    <Ionicons name="calendar" size={20} color="#fff" />
+                  </TouchableOpacity>
+
+                  {Platform.OS === "ios" && showIOSDatePicker ? (
+                    <View
+                      style={{
+                        backgroundColor: "#2C2C2C",
+                        borderRadius: 12,
+                        marginBottom: 12,
+                        padding: 8,
+                      }}
+                    >
+                      <DateTimePicker
+                        value={selectedDate ?? new Date()}
+                        mode="date"
+                        display="inline"
+                        themeVariant="dark"
+                        onChange={(_, dateValue) => {
+                          if (dateValue) {
+                            setSelectedDate(dateValue);
+                          }
+                        }}
+                        style={{ alignSelf: "stretch" }}
+                      />
+                      <TouchableOpacity
+                        style={{
+                          marginTop: 8,
+                          alignSelf: "flex-end",
+                          paddingVertical: 6,
+                          paddingHorizontal: 12,
+                          backgroundColor: "#3A3A3A",
+                          borderRadius: 8,
+                        }}
+                        onPress={() => setShowIOSDatePicker(false)}
+                      >
+                        <Text style={{ color: "white", fontWeight: "600" }}>Done</Text>
+                      </TouchableOpacity>
+                    </View>
+                  ) : null}
+
+                  <TextInput
+                    placeholder="Time (HH:MM) *"
+                    placeholderTextColor="#777"
+                    value={time}
+                    onChangeText={handleTimeChange}
+                    keyboardType="number-pad"
+                    maxLength={5}
+                    autoCorrect={false}
+                    style={{
+                      color: "white",
+                      backgroundColor: "#2C2C2C",
+                      padding: 14,
+                      borderRadius: 10,
+                      marginBottom: 12,
+                    }}
+                  />
+
+                  {showTimeError ? (
+                    <Text style={{ color: "#FF453A", marginBottom: 12 }}>
+                      Please enter a valid 24-hour time (e.g. 09:30).
+                    </Text>
+                  ) : null}
+
+                  <TextInput
+                    placeholder="Description (optional)"
+                    placeholderTextColor="#777"
+                    value={description}
+                    onChangeText={setDescription}
+                    multiline
+                    numberOfLines={3}
+                    style={{
+                      color: "white",
+                      backgroundColor: "#2C2C2C",
+                      padding: 14,
+                      borderRadius: 10,
+                      marginBottom: 20,
+                      textAlignVertical: "top",
+                    }}
+                  />
+
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: "#007AFF",
+                      padding: 16,
+                      borderRadius: 12,
+                      alignItems: "center",
+                      marginBottom: 10,
+                    }}
+                    onPress={addEvent}
+                  >
+                    <Text style={{ color: "white", fontSize: 16, fontWeight: "600" }}>
+                      Create Event
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: "#2C2C2C",
+                      padding: 16,
+                      borderRadius: 12,
+                      alignItems: "center",
+                    }}
+                    onPress={() => {
+                      setShowIOSDatePicker(false);
+                      setModalVisible(false);
+                    }}
+                  >
+                    <Text style={{ color: "white", fontSize: 16, fontWeight: "600" }}>
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
+            </KeyboardAvoidingView>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
