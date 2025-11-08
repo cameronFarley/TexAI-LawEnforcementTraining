@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 
-// Unsure what this _layout file actually does
+// I think this layout file controls the bottom tabs? like index, (auth), modals/modal
+// is this one necessary?
 // why do we have 3 _layout files?
 
 export default function TabLayout() {
@@ -20,6 +21,7 @@ export default function TabLayout() {
         headerTintColor: '#fff',
       }}
     >
+      {/* ------------ Just to silence warnings ------------
       <Tabs.Screen
         name="calendar"
         options={{
@@ -47,6 +49,7 @@ export default function TabLayout() {
           ),
         }}
       />
+      */}
     </Tabs>
   );
 }

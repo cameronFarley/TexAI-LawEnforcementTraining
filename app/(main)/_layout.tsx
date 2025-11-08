@@ -45,7 +45,7 @@ export default function TabLayout() {
         }}
       />
 
-      {/*<Tabs.Screen
+      {/*<Tabs.Screen   -------- Just silencing warnings ----------
         name="progress"
         options={{
           title: "Progress",
@@ -58,7 +58,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="texai/texai"
         options={{
-          title: "Chat",
+          title: "TexAI",
           tabBarIcon: ({ color }) => (
             <Ionicons name="chatbubbles" size={24} color={color} />
           )
