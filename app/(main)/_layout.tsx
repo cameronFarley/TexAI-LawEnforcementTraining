@@ -1,11 +1,6 @@
+// Main layout: defines the bottom tab navigation once the user is in the app.
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-
-/*
-This file controls the icons/navigation at the bottom of the screen
-- Update the navigation to include a progress button (maybe overwrite explore?)
-- Where is the explore button even sourced???
-*/
 
 export default function TabLayout() {
   return (

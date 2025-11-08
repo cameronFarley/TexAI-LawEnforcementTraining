@@ -1,9 +1,6 @@
+// Root layout: wires up the highest-level navigation (auth, main app, modals).
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-
-// I think this layout file controls the bottom tabs? like index, (auth), modals/modal
-// is this one necessary?
-// why do we have 3 _layout files?
 
 export default function TabLayout() {
   return (
