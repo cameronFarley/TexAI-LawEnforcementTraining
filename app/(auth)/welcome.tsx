@@ -2,6 +2,11 @@ import { router } from "expo-router";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
+/* 
+Welcome screen,  when you launch the app for the first time this is what shows
+Prompts the user with the option to create an account or log in to one
+*/
+
 export default function Welcome() {
   return (
     <View style={styles.container}>
@@ -20,14 +25,14 @@ export default function Welcome() {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.primaryButton}
-          onPress={() => router.push("/(onboarding)/name")}
+          onPress={() => router.push("/(auth)/signup/name")}
         >
           <Text style={styles.primaryButtonText}>Get Started</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.secondaryButton}
-          onPress={() => router.replace("/(tabs)")}
+          onPress={() => router.replace("/(main)/home/home")}
         >
           <Text style={styles.secondaryButtonText}>Already have an account</Text>
         </TouchableOpacity>

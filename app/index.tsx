@@ -3,6 +3,11 @@ import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 
+/*
+This index folder just runs the defualt launch process
+If youve already logged in, keep you logged in, else send you to welcome_screen
+*/
+
 export default function Index() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
@@ -27,5 +32,5 @@ export default function Index() {
     );
   }
 
-  return <Redirect href={isLoggedIn ? "/(tabs)" : "/(onboarding)/welcome"} />;
+  return <Redirect href={isLoggedIn ? "/(main)/home/home" : "/(auth)/welcome"} />;
 }

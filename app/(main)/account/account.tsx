@@ -4,7 +4,24 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+/*
+This file defines the Account tab
+- Need working redirects for the following:
+  = Edit Profile
+  = Help & Support
+  = Appearance
+  = Notifications
+  = About
+  = Privacy Policy
+- Add a settings redirect?
+  = Put the notifications and appearance in settings??
+- Tie logout button to an improved account system
+- Maybe generate a random profile pic for different accounts? Just for visual stimulation
+*/
+
 export default function Settings() {
+
+  // Loading user first name and last name
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
@@ -23,6 +40,7 @@ export default function Settings() {
     }
   };
 
+  // Logout button handling
   const handleLogout = () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
       { text: "Cancel", style: "cancel" },
@@ -32,7 +50,7 @@ export default function Settings() {
         onPress: async () => {
           try {
             await AsyncStorage.clear();
-            router.replace("/(onboarding)/welcome");
+            router.replace("/(auth)/welcome");
           } catch (error) {
             Alert.alert("Error", "Failed to logout");
           }
@@ -45,7 +63,7 @@ export default function Settings() {
     <ScrollView style={{ flex: 1, backgroundColor: "#000" }}>
       <View style={{ padding: 20, paddingTop: 60 }}>
         <Text style={{ color: "white", fontSize: 32, fontWeight: "bold", marginBottom: 40 }}>
-          Settings
+          Account
         </Text>
 
         {/* Profile Section */}

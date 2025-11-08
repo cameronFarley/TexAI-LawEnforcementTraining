@@ -9,6 +9,8 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 
+// Unsure what this file is for. Placeholder?
+
 export default function TabTwoScreen() {
   return (
     <ParallaxScrollView

@@ -1,6 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 
+// Unsure what this _layout file actually does
+// why do we have 3 _layout files?
+
 export default function TabLayout() {
   return (
     <Tabs

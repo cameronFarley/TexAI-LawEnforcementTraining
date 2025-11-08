@@ -11,6 +11,13 @@ import {
     View,
 } from "react-native";
 
+/*
+This is the code for the Chat tab
+- All messages creates a "connection error" response, maybe a limit of dev mode?
+- Maybe create an AI specifically trained on the data of whatever were making this for?
+- Should we create a banner at the top saying something? Feels like there should be
+*/
+
 type Message = {
   id: string;
   text: string;

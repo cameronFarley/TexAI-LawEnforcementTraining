@@ -18,6 +18,14 @@ import {
   View,
 } from "react-native";
 
+/*
+This is the code for the calendar tab
+- Maybe create a calendar view that knows current time and day
+  = Can be configed to show day view, week view, and month view, like google calendar?
+- Reconfigure the time input to a selection instead of typing
+  = Maybe an option in setting to use 24hr time or 12hr time?
+*/
+
 type Event = {
   id: string;
   title: string;

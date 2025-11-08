@@ -3,6 +3,14 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 
+/* 
+This page opens when a user wants to create an account from the welcome screen 
+It current asks for a first name and last name
+- Add an account system tied to email and password
+- Add an option for google account?
+- Add an ability for multiple account? Very likely not a necessary feature.
+*/
+
 export default function NameInput() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -20,7 +28,7 @@ export default function NameInput() {
       await AsyncStorage.setItem("isLoggedIn", "true");
       
       // Navigate to tabs
-      router.replace("/(tabs)");
+      router.replace("/(main)/home/home");
     } catch (error) {
       Alert.alert("Error", "Failed to save your information");
     }
@@ -50,6 +58,7 @@ export default function NameInput() {
         Let's get to know you better
       </Text>
 
+      {/* Entry boxes */}
       <TextInput
         placeholder="First name"
         placeholderTextColor="#777"
@@ -80,6 +89,7 @@ export default function NameInput() {
         }}
       />
 
+      {/* Submission button */}
       <TouchableOpacity
         style={{
           marginTop: 40,

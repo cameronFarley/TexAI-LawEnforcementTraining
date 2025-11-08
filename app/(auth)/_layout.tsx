@@ -1,5 +1,8 @@
 import { Stack } from "expo-router";
 
+// I have no idea wheat this file does tbh
+// Why do we have three _layout files?
+
 export default function OnboardingLayout() {
   return (
     <Stack

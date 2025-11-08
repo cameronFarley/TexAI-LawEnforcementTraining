@@ -1,6 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
+/*
+This file controls the icons/navigation at the bottom of the screen
+- Update the navigation to include a progress button (maybe overwrite explore?)
+- Where is the explore button even sourced???
+*/
+
 export default function TabLayout() {
   return (
     <Tabs
@@ -16,8 +22,11 @@ export default function TabLayout() {
         tabBarInactiveTintColor: "gray"
       }}
     >
+
+      {/* Each Tabs.Screen is a button at the bottom nav bar,
+      name="" is set to the file desitination */}
       <Tabs.Screen
-        name="index"
+        name="home/home"
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
@@ -27,6 +36,16 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="learn/learn"
+        options={{
+          title: "Learn",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="library" size={24} color={color} />
+          )
+        }}
+      />
+
+      {/*<Tabs.Screen
         name="progress"
         options={{
           title: "Progress",
@@ -34,12 +53,12 @@ export default function TabLayout() {
             <Ionicons name="stats-chart" size={24} color={color} />
           )
         }}
-      />
+      />*/}
 
       <Tabs.Screen
-        name="chatbot"
+        name="texai/texai"
         options={{
-          title: "Chatbot",
+          title: "Chat",
           tabBarIcon: ({ color }) => (
             <Ionicons name="chatbubbles" size={24} color={color} />
           )
@@ -47,7 +66,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="calendar"
+        name="calendar/calendar"
         options={{
           title: "Calendar",
           tabBarIcon: ({ color }) => (
@@ -57,11 +76,11 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="settings"
+        name="account/account"
         options={{
-          title: "Settings",
+          title: "Account",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="settings" size={24} color={color} />
+            <Ionicons name="person" size={24} color={color} />
           )
         }}
       />
