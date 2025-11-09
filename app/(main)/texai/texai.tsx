@@ -10,6 +10,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { useAppearance } from "@/providers/AppearanceProvider";
 
 /*
 This is the code for the Chat tab
@@ -37,6 +40,8 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const flatListRef = useRef<FlatList>(null);
+  const { colors, scaleFont } = useAppearance();
+  const insets = useSafeAreaInsets();
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -91,7 +96,11 @@ export default function Chat() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: "#000" }}
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+        paddingTop: insets.top,
+      }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={90}
     >
@@ -108,25 +117,33 @@ export default function Chat() {
               alignSelf: item.sender === "user" ? "flex-end" : "flex-start",
               maxWidth: "80%",
             }}
-          >
-            <View
-              style={{
-                backgroundColor: item.sender === "user" ? "#007AFF" : "#1E1E1E",
-                padding: 12,
-                borderRadius: 16,
-                borderBottomRightRadius: item.sender === "user" ? 4 : 16,
-                borderBottomLeftRadius: item.sender === "bot" ? 4 : 16,
-              }}
             >
-              <Text style={{ color: "white", fontSize: 16 }}>{item.text}</Text>
-            </View>
-            <Text
-              style={{
-                color: "#666",
-                fontSize: 11,
-                marginTop: 4,
-                alignSelf: item.sender === "user" ? "flex-end" : "flex-start",
-              }}
+              <View
+                style={{
+                  backgroundColor:
+                    item.sender === "user" ? colors.primary : colors.card,
+                  padding: 12,
+                  borderRadius: 16,
+                  borderBottomRightRadius: item.sender === "user" ? 4 : 16,
+                  borderBottomLeftRadius: item.sender === "bot" ? 4 : 16,
+                }}
+              >
+                <Text
+                  style={{
+                    color: item.sender === "user" ? "#FFFFFF" : colors.text,
+                    fontSize: scaleFont(16),
+                  }}
+                >
+                  {item.text}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  color: colors.muted,
+                  fontSize: scaleFont(11),
+                  marginTop: 4,
+                  alignSelf: item.sender === "user" ? "flex-end" : "flex-start",
+                }}
             >
               {item.timestamp.toLocaleTimeString([], {
                 hour: "2-digit",
@@ -139,7 +156,7 @@ export default function Chat() {
 
       {loading && (
         <View style={{ padding: 16, alignItems: "center" }}>
-          <ActivityIndicator color="#007AFF" />
+          <ActivityIndicator color={colors.primary} />
         </View>
       )}
 
@@ -147,7 +164,7 @@ export default function Chat() {
         style={{
           flexDirection: "row",
           padding: 16,
-          backgroundColor: "#1E1E1E",
+          backgroundColor: colors.card,
           alignItems: "center",
         }}
       >
@@ -155,15 +172,15 @@ export default function Chat() {
           value={input}
           onChangeText={setInput}
           placeholder="Type a message..."
-          placeholderTextColor="#777"
+          placeholderTextColor={colors.muted}
           style={{
             flex: 1,
-            backgroundColor: "#2C2C2C",
-            color: "white",
+            backgroundColor: colors.inputBackground,
+            color: colors.text,
             padding: 12,
             borderRadius: 20,
             marginRight: 12,
-            fontSize: 16,
+            fontSize: scaleFont(16),
           }}
           multiline
           maxLength={500}
@@ -172,7 +189,8 @@ export default function Chat() {
           onPress={sendMessage}
           disabled={!input.trim() || loading}
           style={{
-            backgroundColor: input.trim() && !loading ? "#007AFF" : "#333",
+            backgroundColor:
+              input.trim() && !loading ? colors.primary : colors.border,
             width: 44,
             height: 44,
             borderRadius: 22,

@@ -17,6 +17,9 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { useAppearance } from "@/providers/AppearanceProvider";
 
 /*
 This is the code for the calendar tab
@@ -55,6 +58,10 @@ export default function Calendar() {
   const [description, setDescription] = useState("");
   const showTimeError = time.length === 5 && !TIME_REGEX.test(time);
 
+  const { colors, scaleFont, colorScheme } = useAppearance();
+  const insets = useSafeAreaInsets();
+  const topPadding = insets.top + 20;
+
   const handleTimeChange = (rawValue: string) => {
     const digitsOnly = rawValue.replace(/[^\d]/g, "").slice(0, 4);
     if (digitsOnly.length <= 2) {
@@ -89,10 +96,13 @@ export default function Calendar() {
       description,
     };
 
-    setEvents([...events, newEvent].sort((a, b) => 
-      new Date(a.dateISO + " " + a.time).getTime() - 
-      new Date(b.dateISO + " " + b.time).getTime()
-    ));
+    setEvents(
+      [...events, newEvent].sort(
+        (a, b) =>
+          new Date(`${a.dateISO} ${a.time}`).getTime() -
+          new Date(`${b.dateISO} ${b.time}`).getTime()
+      )
+    );
 
     setTitle("");
     setSelectedDate(null);
@@ -114,10 +124,17 @@ export default function Calendar() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#000", padding: 20 }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+        padding: 20,
+        paddingTop: topPadding,
+      }}
+    >
       <TouchableOpacity
         style={{
-          backgroundColor: "#007AFF",
+          backgroundColor: colors.primary,
           padding: 16,
           borderRadius: 12,
           alignItems: "center",
@@ -125,15 +142,33 @@ export default function Calendar() {
         }}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={{ color: "white", fontSize: 16, fontWeight: "600" }}>
+        <Text
+          style={{
+            color: "#FFFFFF",
+            fontSize: scaleFont(16),
+            fontWeight: "600",
+          }}
+        >
           + Add Event
         </Text>
       </TouchableOpacity>
 
       {events.length === 0 ? (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <Ionicons name="calendar-outline" size={64} color="#333" />
-          <Text style={{ color: "#888", marginTop: 10, fontSize: 16 }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Ionicons name="calendar-outline" size={64} color={colors.muted} />
+          <Text
+            style={{
+              color: colors.muted,
+              marginTop: 10,
+              fontSize: scaleFont(16),
+            }}
+          >
             No events yet
           </Text>
         </View>
@@ -141,28 +176,54 @@ export default function Calendar() {
         <FlatList
           data={events}
           keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingBottom: 40 }}
           renderItem={({ item }) => (
             <View
               style={{
-                backgroundColor: "#1E1E1E",
+                backgroundColor: colors.card,
                 padding: 16,
                 borderRadius: 12,
                 marginBottom: 12,
               }}
             >
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Text style={{ color: "white", fontSize: 18, fontWeight: "600", flex: 1 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontSize: scaleFont(18),
+                    fontWeight: "600",
+                    flex: 1,
+                  }}
+                >
                   {item.title}
                 </Text>
                 <TouchableOpacity onPress={() => deleteEvent(item.id)}>
-                  <Ionicons name="trash-outline" size={20} color="#FF3B30" />
+                  <Ionicons name="trash-outline" size={20} color={colors.destructive} />
                 </TouchableOpacity>
               </View>
-              <Text style={{ color: "#888", marginTop: 8 }}>
+              <Text
+                style={{
+                  color: colors.muted,
+                  marginTop: 8,
+                  fontSize: scaleFont(14),
+                }}
+              >
                 {item.dateLabel} at {item.time}
               </Text>
               {item.description ? (
-                <Text style={{ color: "#CCC", marginTop: 8 }}>
+                <Text
+                  style={{
+                    color: colors.text,
+                    marginTop: 8,
+                    fontSize: scaleFont(14),
+                  }}
+                >
                   {item.description}
                 </Text>
               ) : null}
@@ -178,7 +239,13 @@ export default function Calendar() {
         onRequestClose={() => setModalVisible(false)}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "flex-end",
+              backgroundColor: colors.overlay,
+            }}
+          >
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
               keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
@@ -192,22 +259,37 @@ export default function Calendar() {
                 }}
                 keyboardShouldPersistTaps="handled"
               >
-                <View style={{ backgroundColor: "#1E1E1E", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20 }}>
-                  <Text style={{ color: "white", fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
+                <View
+                  style={{
+                    backgroundColor: colors.card,
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
+                    padding: 20,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontSize: scaleFont(24),
+                      fontWeight: "bold",
+                      marginBottom: 20,
+                    }}
+                  >
                     New Event
                   </Text>
 
                   <TextInput
                     placeholder="Event title *"
-                    placeholderTextColor="#777"
+                    placeholderTextColor={colors.muted}
                     value={title}
                     onChangeText={setTitle}
                     style={{
-                      color: "white",
-                      backgroundColor: "#2C2C2C",
+                      color: colors.text,
+                      backgroundColor: colors.inputBackground,
                       padding: 14,
                       borderRadius: 10,
-                      marginBottom: 12,
+                      marginBottom: 16,
+                      fontSize: scaleFont(16),
                     }}
                   />
 
@@ -230,7 +312,7 @@ export default function Calendar() {
                       }
                     }}
                     style={{
-                      backgroundColor: "#2C2C2C",
+                      backgroundColor: colors.inputBackground,
                       padding: 14,
                       borderRadius: 10,
                       marginBottom: 12,
@@ -239,18 +321,21 @@ export default function Calendar() {
                       justifyContent: "space-between",
                     }}
                   >
-                    <Text style={{ color: selectedDate ? "white" : "#777", fontSize: 16 }}>
-                      {selectedDate
-                        ? formatDisplayDate(selectedDate)
-                        : "Select date *"}
+                    <Text
+                      style={{
+                        color: selectedDate ? colors.text : colors.muted,
+                        fontSize: scaleFont(16),
+                      }}
+                    >
+                      {selectedDate ? formatDisplayDate(selectedDate) : "Select date *"}
                     </Text>
-                    <Ionicons name="calendar" size={20} color="#fff" />
+                    <Ionicons name="calendar" size={20} color={colors.text} />
                   </TouchableOpacity>
 
                   {Platform.OS === "ios" && showIOSDatePicker ? (
                     <View
                       style={{
-                        backgroundColor: "#2C2C2C",
+                        backgroundColor: colors.surface,
                         borderRadius: 12,
                         marginBottom: 12,
                         padding: 8,
@@ -260,7 +345,7 @@ export default function Calendar() {
                         value={selectedDate ?? new Date()}
                         mode="date"
                         display="inline"
-                        themeVariant="dark"
+                        themeVariant={colorScheme === "light" ? "light" : "dark"}
                         onChange={(_, dateValue) => {
                           if (dateValue) {
                             setSelectedDate(dateValue);
@@ -274,59 +359,75 @@ export default function Calendar() {
                           alignSelf: "flex-end",
                           paddingVertical: 6,
                           paddingHorizontal: 12,
-                          backgroundColor: "#3A3A3A",
+                          backgroundColor: colors.card,
                           borderRadius: 8,
                         }}
                         onPress={() => setShowIOSDatePicker(false)}
                       >
-                        <Text style={{ color: "white", fontWeight: "600" }}>Done</Text>
+                        <Text
+                          style={{
+                            color: colors.text,
+                            fontWeight: "600",
+                            fontSize: scaleFont(14),
+                          }}
+                        >
+                          Done
+                        </Text>
                       </TouchableOpacity>
                     </View>
                   ) : null}
 
                   <TextInput
                     placeholder="Time (HH:MM) *"
-                    placeholderTextColor="#777"
+                    placeholderTextColor={colors.muted}
                     value={time}
                     onChangeText={handleTimeChange}
                     keyboardType="number-pad"
                     maxLength={5}
                     autoCorrect={false}
                     style={{
-                      color: "white",
-                      backgroundColor: "#2C2C2C",
+                      color: colors.text,
+                      backgroundColor: colors.inputBackground,
                       padding: 14,
                       borderRadius: 10,
-                      marginBottom: 12,
+                      marginBottom: 4,
+                      fontSize: scaleFont(16),
                     }}
                   />
 
                   {showTimeError ? (
-                    <Text style={{ color: "#FF453A", marginBottom: 12 }}>
+                    <Text
+                      style={{
+                        color: colors.destructive,
+                        marginBottom: 12,
+                        fontSize: scaleFont(12),
+                      }}
+                    >
                       Please enter a valid 24-hour time (e.g. 09:30).
                     </Text>
                   ) : null}
 
                   <TextInput
                     placeholder="Description (optional)"
-                    placeholderTextColor="#777"
+                    placeholderTextColor={colors.muted}
                     value={description}
                     onChangeText={setDescription}
                     multiline
                     numberOfLines={3}
                     style={{
-                      color: "white",
-                      backgroundColor: "#2C2C2C",
+                      color: colors.text,
+                      backgroundColor: colors.inputBackground,
                       padding: 14,
                       borderRadius: 10,
                       marginBottom: 20,
                       textAlignVertical: "top",
+                      fontSize: scaleFont(16),
                     }}
                   />
 
                   <TouchableOpacity
                     style={{
-                      backgroundColor: "#007AFF",
+                      backgroundColor: colors.primary,
                       padding: 16,
                       borderRadius: 12,
                       alignItems: "center",
@@ -334,14 +435,20 @@ export default function Calendar() {
                     }}
                     onPress={addEvent}
                   >
-                    <Text style={{ color: "white", fontSize: 16, fontWeight: "600" }}>
+                    <Text
+                      style={{
+                        color: "#FFFFFF",
+                        fontSize: scaleFont(16),
+                        fontWeight: "600",
+                      }}
+                    >
                       Create Event
                     </Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={{
-                      backgroundColor: "#2C2C2C",
+                      backgroundColor: colors.surface,
                       padding: 16,
                       borderRadius: 12,
                       alignItems: "center",
@@ -351,7 +458,13 @@ export default function Calendar() {
                       setModalVisible(false);
                     }}
                   >
-                    <Text style={{ color: "white", fontSize: 16, fontWeight: "600" }}>
+                    <Text
+                      style={{
+                        color: colors.text,
+                        fontSize: scaleFont(16),
+                        fontWeight: "600",
+                      }}
+                    >
                       Cancel
                     </Text>
                   </TouchableOpacity>

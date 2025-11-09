@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { useAppearance } from "@/providers/AppearanceProvider";
 
 /*
 This is the code for the learn tab
@@ -14,15 +15,24 @@ This is the code for the learn tab
 */
 
 export default function Learn() {
+  const { colors, scaleFont } = useAppearance();
+  const insets = useSafeAreaInsets();
+  const topPadding = insets.top + 20;
+
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#000" }}>
-      <View style={{ padding: 20, paddingTop: 60 }}>
-        <Text style={{ 
-          color: "white", 
-          fontSize: 32, 
-          fontWeight: "bold",
-          marginBottom: 30
-        }}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: colors.background }}
+      contentContainerStyle={{ paddingBottom: 40 }}
+    >
+      <View style={{ padding: 20, paddingTop: topPadding }}>
+        <Text
+          style={{
+            color: colors.text,
+            fontSize: scaleFont(32),
+            fontWeight: "bold",
+            marginBottom: 30,
+          }}
+        >
           Learn
         </Text>
 
@@ -31,7 +41,7 @@ export default function Learn() {
           {/* First quick action : Learn */}
           <TouchableOpacity
             style={{
-              backgroundColor: "#1E1E1E",
+              backgroundColor: colors.card,
               padding: 20,
               borderRadius: 16,
               flexDirection: "row",
@@ -51,20 +61,27 @@ export default function Learn() {
               <Ionicons name="book" size={24} color="#FF9F0A" />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ color: "white", fontSize: 18, fontWeight: "600", marginBottom: 4 }}>
+              <Text
+                style={{
+                  color: colors.text,
+                  fontSize: scaleFont(18),
+                  fontWeight: "600",
+                  marginBottom: 4,
+                }}
+              >
                 Learn
               </Text>
-              <Text style={{ color: "#888", fontSize: 14 }}>
+              <Text style={{ color: colors.muted, fontSize: scaleFont(14) }}>
                 Customized learning experience
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#888" />
+            <Ionicons name="chevron-forward" size={20} color={colors.muted} />
           </TouchableOpacity>
 
           {/* Second Quick action box : Flashcards */}
           <TouchableOpacity
             style={{
-              backgroundColor: "#1E1E1E",
+              backgroundColor: colors.card,
               padding: 20,
               borderRadius: 16,
               flexDirection: "row",
@@ -84,20 +101,27 @@ export default function Learn() {
               <Ionicons name="albums" size={24} color="#007AFF" />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ color: "white", fontSize: 18, fontWeight: "600", marginBottom: 4 }}>
+              <Text
+                style={{
+                  color: colors.text,
+                  fontSize: scaleFont(18),
+                  fontWeight: "600",
+                  marginBottom: 4,
+                }}
+              >
                 Flash Cards
               </Text>
-              <Text style={{ color: "#888", fontSize: 14 }}>
+              <Text style={{ color: colors.muted, fontSize: scaleFont(14) }}>
                 Memorize!
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#888" />
+            <Ionicons name="chevron-forward" size={20} color={colors.muted} />
           </TouchableOpacity>
 
           {/* third Quick action box : Quiz */}
           <TouchableOpacity
             style={{
-              backgroundColor: "#1E1E1E",
+              backgroundColor: colors.card,
               padding: 20,
               borderRadius: 16,
               flexDirection: "row",
@@ -117,20 +141,27 @@ export default function Learn() {
               <Ionicons name="reader" size={24} color="#34C759" />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ color: "white", fontSize: 18, fontWeight: "600", marginBottom: 4 }}>
+              <Text
+                style={{
+                  color: colors.text,
+                  fontSize: scaleFont(18),
+                  fontWeight: "600",
+                  marginBottom: 4,
+                }}
+              >
                 Quiz
               </Text>
-              <Text style={{ color: "#888", fontSize: 14 }}>
+              <Text style={{ color: colors.muted, fontSize: scaleFont(14) }}>
                 Test your knowledge
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#888" />
+            <Ionicons name="chevron-forward" size={20} color={colors.muted} />
           </TouchableOpacity>
 
           {/* A fourth quick action : Matching */}
           <TouchableOpacity
               style={{
-                backgroundColor: "#1E1E1E",
+                backgroundColor: colors.card,
                 padding: 20,
                 borderRadius: 16,
                 flexDirection: "row",
@@ -150,38 +181,106 @@ export default function Learn() {
                 <Ionicons name="copy" size={24} color="#AA6FD6" />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: "white", fontSize: 18, fontWeight: "600", marginBottom: 4 }}>
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontSize: scaleFont(18),
+                    fontWeight: "600",
+                    marginBottom: 4,
+                  }}
+                >
                   Matching
                 </Text>
-                <Text style={{ color: "#888", fontSize: 14 }}>
+                <Text style={{ color: colors.muted, fontSize: scaleFont(14) }}>
                   Match the terms
                 </Text>
               </View>
-              <Ionicons name="chevron-forward" size={20} color="#888" />
+              <Ionicons name="chevron-forward" size={20} color={colors.muted} />
             </TouchableOpacity>
           </View>
 
         {/* Today's Overview */}
         <View style={{ marginTop: 40 }}>
-          <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", marginBottom: 16 }}>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: scaleFont(20),
+              fontWeight: "bold",
+              marginBottom: 16,
+            }}
+          >
             Mastery
           </Text>
           
-          <View style={{ backgroundColor: "#1E1E1E", padding: 20, borderRadius: 16 }}>
+          <View
+            style={{
+              backgroundColor: colors.card,
+              padding: 20,
+              borderRadius: 16,
+            }}
+          >
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 16 }}>
               <View style={{ alignItems: "center", flex: 1 }}>
-                <Text style={{ color: "#888", fontSize: 14, marginBottom: 4 }}>Terms</Text>
-                <Text style={{ color: "white", fontSize: 24, fontWeight: "bold" }}>0</Text>
+                <Text
+                  style={{
+                    color: colors.muted,
+                    fontSize: scaleFont(14),
+                    marginBottom: 4,
+                  }}
+                >
+                  Terms
+                </Text>
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontSize: scaleFont(24),
+                    fontWeight: "bold",
+                  }}
+                >
+                  0
+                </Text>
               </View>
-              <View style={{ width: 1, backgroundColor: "#2C2C2C" }} />
+              <View style={{ width: 1, backgroundColor: colors.border }} />
               <View style={{ alignItems: "center", flex: 1 }}>
-                <Text style={{ color: "#888", fontSize: 14, marginBottom: 4 }}>Topics</Text>
-                <Text style={{ color: "white", fontSize: 24, fontWeight: "bold" }}>0</Text>
+                <Text
+                  style={{
+                    color: colors.muted,
+                    fontSize: scaleFont(14),
+                    marginBottom: 4,
+                  }}
+                >
+                  Topics
+                </Text>
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontSize: scaleFont(24),
+                    fontWeight: "bold",
+                  }}
+                >
+                  0
+                </Text>
               </View>
-              <View style={{ width: 1, backgroundColor: "#2C2C2C" }} />
+              <View style={{ width: 1, backgroundColor: colors.border }} />
               <View style={{ alignItems: "center", flex: 1 }}>
-                <Text style={{ color: "#888", fontSize: 14, marginBottom: 4 }}>Completion</Text>
-                <Text style={{ color: "white", fontSize: 24, fontWeight: "bold" }}>0%</Text>
+                <Text
+                  style={{
+                    color: colors.muted,
+                    fontSize: scaleFont(14),
+                    marginBottom: 4,
+                  }}
+                >
+                  Completion
+                </Text>
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontSize: scaleFont(24),
+                    fontWeight: "bold",
+                  }}
+                >
+                  0%
+                </Text>
               </View>
             </View>
           </View>

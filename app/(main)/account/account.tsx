@@ -12,6 +12,7 @@ import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   FONT_SCALE_MAX,
@@ -52,6 +53,8 @@ export default function Settings() {
     fontScale,
     setFontScale,
   } = useAppearance();
+  const insets = useSafeAreaInsets();
+  const topPadding = insets.top + 20;
 
   useEffect(() => {
     loadUserData();
@@ -106,7 +109,7 @@ export default function Settings() {
       style={{ flex: 1, backgroundColor: colors.background }}
       contentContainerStyle={{ paddingBottom: 40 }}
     >
-      <View style={{ padding: 20, paddingTop: 60 }}>
+      <View style={{ padding: 20, paddingTop: topPadding }}>
         <Text
           style={{
             color: colors.text,

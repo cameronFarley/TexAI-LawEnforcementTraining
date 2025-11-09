@@ -3,6 +3,8 @@ import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 
+import { useAppearance } from "@/providers/AppearanceProvider";
+
 /*
 This index folder just runs the defualt launch process
 If youve already logged in, keep you logged in, else send you to welcome_screen
@@ -10,6 +12,7 @@ If youve already logged in, keep you logged in, else send you to welcome_screen
 
 export default function Index() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const { colors } = useAppearance();
 
   useEffect(() => {
     checkLoginStatus();
@@ -26,8 +29,15 @@ export default function Index() {
 
   if (isLoggedIn === null) {
     return (
-      <View style={{ flex: 1, backgroundColor: "#000", justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#007AFF" />
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: colors.background,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }

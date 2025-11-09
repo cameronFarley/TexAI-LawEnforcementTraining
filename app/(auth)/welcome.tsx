@@ -2,39 +2,79 @@ import { router } from "expo-router";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
+import { useAppearance } from "@/providers/AppearanceProvider";
+
 /* 
 Welcome screen,  when you launch the app for the first time this is what shows
 Prompts the user with the option to create an account or log in to one
 */
 
 export default function Welcome() {
+  const { colors, scaleFont } = useAppearance();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.content}>
-        <View style={styles.iconContainer}>
-          <Ionicons name="calendar" size={80} color="#007AFF" />
+        <View style={[styles.iconContainer, { backgroundColor: colors.card }]}>
+          <Ionicons name="calendar" size={80} color={colors.primary} />
         </View>
-        
-        <Text style={styles.title}>Welcome to TexAI</Text>
-        
-        <Text style={styles.subtitle}>
+
+        <Text
+          style={[
+            styles.title,
+            { color: colors.text, fontSize: scaleFont(32) },
+          ]}
+        >
+          Welcome to TexAI
+        </Text>
+
+        <Text
+          style={[
+            styles.subtitle,
+            {
+              color: colors.muted,
+              fontSize: scaleFont(18),
+              lineHeight: scaleFont(26),
+            },
+          ]}
+        >
           Organize your schedule and chat with AI - all in one place
         </Text>
       </View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={styles.primaryButton}
+          style={[
+            styles.primaryButton,
+            { backgroundColor: colors.primary },
+          ]}
           onPress={() => router.push("/(auth)/signup/name")}
         >
-          <Text style={styles.primaryButtonText}>Get Started</Text>
+          <Text
+            style={[
+              styles.primaryButtonText,
+              { fontSize: scaleFont(18) },
+            ]}
+          >
+            Get Started
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.secondaryButton}
+          style={[
+            styles.secondaryButton,
+            { backgroundColor: colors.card },
+          ]}
           onPress={() => router.replace("/(main)/home/home")}
         >
-          <Text style={styles.secondaryButtonText}>Already have an account</Text>
+          <Text
+            style={[
+              styles.secondaryButtonText,
+              { color: colors.primary, fontSize: scaleFont(16) },
+            ]}
+          >
+            Already have an account
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -44,7 +84,6 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
     padding: 20,
   },
   content: {
@@ -56,49 +95,38 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: "#1E1E1E",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 40,
   },
   title: {
-    fontSize: 32,
     fontWeight: "bold",
-    color: "white",
     marginBottom: 16,
     textAlign: "center",
   },
   subtitle: {
-    fontSize: 18,
-    color: "#888",
     textAlign: "center",
     paddingHorizontal: 20,
-    lineHeight: 26,
   },
   buttonContainer: {
     gap: 12,
     paddingBottom: 40,
   },
   primaryButton: {
-    backgroundColor: "#007AFF",
     padding: 18,
     borderRadius: 12,
     alignItems: "center",
   },
   primaryButtonText: {
-    color: "white",
-    fontSize: 18,
+    color: "#FFFFFF",
     fontWeight: "600",
   },
   secondaryButton: {
-    backgroundColor: "#1E1E1E",
     padding: 18,
     borderRadius: 12,
     alignItems: "center",
   },
   secondaryButtonText: {
-    color: "#007AFF",
-    fontSize: 16,
     fontWeight: "600",
   },
 });
