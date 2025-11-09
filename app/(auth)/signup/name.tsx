@@ -3,6 +3,8 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 
+import { useAppearance } from "@/providers/AppearanceProvider";
+
 /* 
 This page opens when a user wants to create an account from the welcome screen 
 It current asks for a first name and last name
@@ -14,6 +16,7 @@ It current asks for a first name and last name
 export default function NameInput() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const { colors, scaleFont } = useAppearance();
 
   const handleContinue = async () => {
     if (!firstName.trim() || !lastName.trim()) {
@@ -35,57 +38,63 @@ export default function NameInput() {
   };
 
   return (
-    <View style={{
-      flex: 1,
-      padding: 20,
-      backgroundColor: "black",
-      justifyContent: "center"
-    }}>
-      <Text style={{ 
-        color: "white", 
-        fontSize: 32, 
-        fontWeight: "bold",
-        marginBottom: 10
-      }}>
+    <View
+      style={{
+        flex: 1,
+        padding: 20,
+        backgroundColor: colors.background,
+        justifyContent: "center",
+      }}
+    >
+      <Text
+        style={{
+          color: colors.text,
+          fontSize: scaleFont(32),
+          fontWeight: "bold",
+          marginBottom: 10,
+        }}
+      >
         What's your name?
       </Text>
-      
-      <Text style={{ 
-        color: "#888", 
-        fontSize: 16,
-        marginBottom: 30
-      }}>
+
+      <Text
+        style={{
+          color: colors.muted,
+          fontSize: scaleFont(16),
+          marginBottom: 30,
+        }}
+      >
         Let's get to know you better
       </Text>
 
       {/* Entry boxes */}
       <TextInput
         placeholder="First name"
-        placeholderTextColor="#777"
+        placeholderTextColor={colors.muted}
         value={firstName}
         onChangeText={setFirstName}
         style={{
           marginTop: 20,
-          color: "white",
-          backgroundColor: "#1E1E1E",
+          color: colors.text,
+          backgroundColor: colors.inputBackground,
           padding: 14,
           borderRadius: 10,
-          fontSize: 16
+          fontSize: scaleFont(16),
         }}
       />
 
       <TextInput
         placeholder="Last name"
-        placeholderTextColor="#777"
+        placeholderTextColor={colors.muted}
         value={lastName}
         onChangeText={setLastName}
         style={{
           marginTop: 10,
-          color: "white",
-          backgroundColor: "#1E1E1E",
+          color: colors.text,
+          backgroundColor: colors.inputBackground,
           padding: 14,
           borderRadius: 10,
-          fontSize: 16
+          fontSize: scaleFont(16),
         }}
       />
 
@@ -93,14 +102,20 @@ export default function NameInput() {
       <TouchableOpacity
         style={{
           marginTop: 40,
-          backgroundColor: "#007AFF",
+          backgroundColor: colors.primary,
           padding: 16,
           borderRadius: 12,
-          alignItems: "center"
+          alignItems: "center",
         }}
         onPress={handleContinue}
       >
-        <Text style={{ color: "white", fontSize: 16, fontWeight: "600" }}>
+        <Text
+          style={{
+            color: "#FFFFFF",
+            fontSize: scaleFont(16),
+            fontWeight: "600",
+          }}
+        >
           Continue
         </Text>
       </TouchableOpacity>
