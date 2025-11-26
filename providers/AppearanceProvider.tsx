@@ -38,6 +38,7 @@ type ThemeColors = {
   yellowSoft: string;
   green: string;
   greenSoft: string;
+  svg: string;
   destructive: string;
 };
 
@@ -189,6 +190,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     const blue = colorScheme === "dark" ? "rgba(0, 122, 255, 0.8)" : "rgba(0, 98, 202, 0.8)";
     const yellow = colorScheme === "dark" ? "rgba(255, 255, 0, 0.8)" : "rgba(255, 215, 0, 1)";
     const green = colorScheme === "dark" ? "rgba(0, 255, 145, 0.8)" : "rgba(0, 255, 145, 0.6)";
+    const svg = colorScheme === "dark" ? "#4A70A9" : "#8FABD4";
 
     return {
       ...palette,
@@ -236,6 +238,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
         colorScheme === "dark"
           ? "rgba(52,199,89,0.2)"
           : "rgba(52,199,89,0.12)",
+      svg,
       destructive: "#FF453A",
     };
   }, [colorScheme, highContrast]);
